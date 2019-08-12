@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     KeyboardAvoidingView, 
     StyleSheet, 
@@ -9,11 +9,25 @@ import {
     Platform
 } from 'react-native';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
 import api from '../services/api';
 import logo from '../assets/logo.png';
 
 export default function Login({ navigation }) {
     const [user, setUser] = useState('');
+
+    useEffect(() => {
+        AsyncStorage.getItem('user')
+            .then((user) => {
+
+                console.log(user);
+
+                if (user) {
+                    navigation.navigate('Main', { user });
+                }
+            })
+    }, []);
 
     async function handleLogin() {
         console.log(user);
@@ -22,7 +36,10 @@ export default function Login({ navigation }) {
                 username: user
             }
         );
-        navigation.navigate('Main');
+
+        const { _id : userId } = response.data
+        AsyncStorage.setItem('user', userId);
+        navigation.navigate('Main', { user: userId });
     }
 
     return (
