@@ -7,9 +7,10 @@ import logo from '../assets/logo.png';
 import dislike from '../assets/dislike.png';
 import like from '../assets/like.png';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
 export default function Main( { navigation } ) {
     const id = navigation.getParam('user');
-
 
     const [users, setUsers] = useState([]);
 
@@ -48,11 +49,16 @@ export default function Main( { navigation } ) {
         setUsers(users.filter( user => user._id !== id))
     }
 
-
+    function logout() {
+        AsyncStorage.removeItem('user');
+        navigation.navigate('Login', { user: null });
+    }
 
     return (
         <SafeAreaView style={style.container}>
-            <Image style={style.logo} source={logo} />
+            <TouchableOpacity onPress={() => logout()}>
+                <Image style={style.logo} source={logo} />
+            </TouchableOpacity>
 
             <View style={style.cardsContainer}>
                 <View style={style.card}>
@@ -62,7 +68,7 @@ export default function Main( { navigation } ) {
                     />
                     <View style={style.footer}>
                         <Text style={style.name}>Nome completo sinistro</Text>
-                        <Text  style={style.bio} numberOfLines={3} > Descrição do dev  Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev </Text>
+                        <Text style={style.bio} numberOfLines={3} > Descrição do dev  Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev Descrição do dev </Text>
                     </View>
                     
                 </View>
